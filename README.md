@@ -97,3 +97,13 @@ But also a scsi adapter can be used.
 When adding the disk to Vmware player, the programs asks for converting the disk, say NO here.
 
 Have fun.
+
+ps.
+
+```
+Kernel panic - not syncing: VFS Unable to mount root fs on unkown-block(0,0)
+Kernel Offset: disabled
+Rebooting in 60 seconds.
+```
+
+Simply means, give it more RAM !!!
