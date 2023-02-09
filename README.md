@@ -25,7 +25,7 @@ These are NOT kernel version specific. The kernel must handle the initrd itself 
 
 ```
 WORK=/mnt/sda1/somedir
-OUTPUT="linux-disk"
+OUTPUT="linux"
 KERNEL="$WORK/vmlinuz64"
 INITRD="$WORK/corepure64.gz"
 CMDLINE="'loglevel=3'"
@@ -34,13 +34,13 @@ CMDLINE="'loglevel=3'"
 Building the disk by:
 ```
 $ ./build.sh
-bootsector, kernel and initrd catenated in linux-6.1.2 and created linux-6.1.2.vmdk
+bootsector, kernel and initrd catenated in linux and created linux.vmdk
 ```
 
 This will produce two files:
 
-- linux-6.1.2
-- linux-6.1.2.vmdk
+- linux
+- linux.vmdk
 
 When running vmware or esxi platform, the vmdk disk can ben used as a bootable device.
 
@@ -50,7 +50,7 @@ Very simular to the unix variant this batch program can run to do the same task.
 Configuring the needed paramers.
 
 ```
-set OUTPUT=linux-6.1.2
+set OUTPUT=linux
 set KERNEL=vmlinuz64
 set INITRD=corepure64.gz
 set CMDLINE='loglevel=3'
@@ -84,9 +84,9 @@ or for 64 bit
 $ qemu-system-x86_64 linux-disk
 ```
 
-In vmware only adding an 'existing disk' pointing to linux-6.1.2.vmdk should be enough
+In vmware only adding an 'existing disk' pointing to linux.vmdk should be enough
 ```
-ide0:0.fileName = "linux-6.1.2.vmdk"
+ide0:0.fileName = "linux.vmdk"
 ```
 
 But also a scsi adapter can be used.
