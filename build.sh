@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh
 # Tiny Linux Bootloader
 # (c) 2014- Dr Gareth Owen (www.ghowen.me). All rights reserved.
 
@@ -14,7 +14,9 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#    Changed by Alphons van der Heijden for making .vmdk disk for booting in vmware
+
+#
+#    Updated 2023- by Alphons van der Heijden for making .vmdk disk for booting in vmware
 
 WORK=/mnt/sda1/release/iso_contents/boot
 

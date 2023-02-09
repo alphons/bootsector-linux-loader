@@ -15,8 +15,6 @@
 ;    You should have received a copy of the GNU General Public License
 ;    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;%define DEBUG
-
 [BITS 16]
 org	0x7c00
 
@@ -102,10 +100,6 @@ read_kernel_setup:
 ;load initrd
     mov eax, 0x7fab000; this is the address qemu loads it at
     mov [highmove_addr],eax ; end of kernel and initrd load address
-    ;mov eax, [highmove_addr] ; end of kernel and initrd load address
-    ;add eax, 4096
-    ;and eax, 0xfffff000
-    ;mov [highmove_addr],eax ; end of kernel and initrd load address
 
     mov [es:0x218], eax
     mov edx, [initRdSize] ; ramdisk size in bytes
@@ -180,25 +174,7 @@ highmove:
     ret
 
 err:
-%ifdef DEBUG
-    mov si, errStr
-    call print
-%endif
     jmp $
-
-%ifdef DEBUG
-; si = source str
-print:
-    lodsb
-    and al, al
-    jz print.end
-    mov ah, 0xe
-    mov bx, 7
-    int 0x10
-    jmp print
-print.end:
-    ret
-%endif
 
 hddread:
     push eax
@@ -250,10 +226,6 @@ gdt:
     db 0 ; base[24:31]
 gdt_end:
 
-%ifdef DEBUG
-    errStr db 'err!!',0
-%endif
-
 ; config options
     hddLBA dd 1   ; start address for kernel - subsequent calls are sequential
     initRdSize dd initRdSizeDef
@@ -264,17 +236,3 @@ gdt_end:
 ;boot sector magic
 	times	510-($-$$)	db	0
 	dw	0xaa55
-
-
-; real mode print code
-;    mov si, strhw
-;    mov eax, 0xb8000
-;    mov ch, 0x1F ; white on blue
-;loop:
-;    mov cl, [si]
-;    mov word [ds:eax], cx
-;    inc si
-;    add eax, 2
-;    cmp [si], byte 0
-;    jnz loop
-
