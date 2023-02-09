@@ -1,4 +1,4 @@
-; Tiny Linux Bootloader
+; Bootsector Linux loader
 ; (c) 2014- Dr Gareth Owen (www.ghowen.me). All rights reserved.
 ; Some code adapted from Sebastian Plotz - rewritten, adding pmode and initrd support.
 
@@ -14,6 +14,7 @@
 ;
 ;    You should have received a copy of the GNU General Public License
 ;    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;    Adapted 2023- Alphons van der Heijden
 
 [BITS 16]
 org	0x7c00
