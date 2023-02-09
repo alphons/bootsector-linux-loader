@@ -11,6 +11,8 @@ At this moment, only 1 initrd can be used. (not rootfs64.gz and modules64.gz)
 
 !! initramfs only !!
 
+The generated .vmdk file is only used in a VMWare environment, but not needed when in Qemu or other VM application.
+
 ### Prereq NASM
 
 Get a version of [NASM](https://www.nasm.us/) at the official site, or maybe it is installed on your unix system already.
@@ -62,7 +64,7 @@ running the script from a dos prompt, or double click in windows
 
 ```
 C:\> build.cmd
-bootsector, kernel and initrd catenated in linux-6.1.2 and created linux-6.1.2.vmdk
+bootsector, kernel and initrd catenated in linux and created linux.vmdk
 ```
 
 ### bsect.asm
