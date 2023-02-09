@@ -72,7 +72,7 @@ bootsector, kernel and initrd catenated in linux and created linux.vmdk
 The key to this solution is the bootsector program made by [Gareth Owen](/owenson/tiny-linux-bootloader)
 with some small modifications.
 
-There is not much room to pack it all into 512 bytes of the bootsector. At default a command line of 68 chars can be used at max.
+There is not much room to pack it all into 512 bytes of the bootsector. At default a kernel command line of 68 chars can be used at max.
 
 The result is always a 512 byte bootsector which loads the (padded to 512 byte sectors) kernel in protected mode and
 also loads the (also padded to 512 bytes sector) initrd into protected memory and starts executing the kernel with given command line
