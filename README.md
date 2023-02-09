@@ -81,9 +81,9 @@ and memory pointer to initrd.
 For testing one can use
 
 ```
-$ qemu-system-x86 linux-disk -m 1024
+$ qemu-system-x86 linux -m 1024
 or for 64 bit
-$ qemu-system-x86_64 linux-disk -m 1024
+$ qemu-system-x86_64 linux -m 1024
 ```
 
 In vmware only adding an 'existing disk' pointing to linux.vmdk should be enough
