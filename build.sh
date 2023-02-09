@@ -20,7 +20,7 @@
 
 WORK=/mnt/sda1/release/iso_contents/boot
 
-OUTPUT="linux-6.1.2"
+OUTPUT="linux"
 KERNEL="$WORK/vmlinuz64"
 INITRD="$WORK/corepure64.gz"
 CMDLINE="'loglevel=3'"

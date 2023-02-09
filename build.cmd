@@ -10,7 +10,7 @@ rem
 rem
 setlocal
 
-set OUTPUT=linux-6.1.2
+set OUTPUT=linux
 set KERNEL=vmlinuz64
 set INITRD=corepure64.gz
 set CMDLINE='loglevel=3'
