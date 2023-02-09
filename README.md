@@ -1,8 +1,8 @@
 # bootsector-linux-loader
 
-No bootloader needed to make a linux distribution bootable from only the kernel and initrd
+No bootloader nor a filesystem is needed to make a linux distribution bootable from only the kernel and initrd
 
-All is tested with versions of TinyCore
+All is tested with versions of TinyCore but other distros should be also no problem.
 
 - [corepure64.gz](http://www.tinycorelinux.net/13.x/x86_64/release/distribution_files/corepure64.gz)
 - [vmlinuz64](http://www.tinycorelinux.net/13.x/x86_64/release/distribution_files/vmlinuz64)
@@ -76,4 +76,20 @@ and memory pointer to initrd.
 
 ## Running the bootdisc
 
-For testing one can use 
+For testing one can use
+
+```
+$ qemu-system-x86 linux-disk
+or for 64 bit
+$ qemu-system-x86_64 linux-disk
+```
+
+In vmware only adding an 'existing disk' pointing to linux-6.1.2.vmdk should be enough
+```
+ide0:0.fileName = "linux-6.1.2.vmdk"
+```
+
+But also a scsi adapter can be used.
+When adding the disk to Vmware player, the programs asks for converting the disk, say NO here.
+
+Have fun.
