@@ -39,8 +39,8 @@ bootsector, kernel and initrd catenated in linux-6.1.2 and created linux-6.1.2.v
 
 This will produce two files:
 
-- linux-disk
-- linux-disk.vmdk
+- linux-6.1.2
+- linux-6.1.2.vmdk
 
 When running vmware or esxi platform, the vmdk disk can ben used as a bootable device.
 
