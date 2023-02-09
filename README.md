@@ -9,7 +9,7 @@ All is tested with versions of TinyCore but other distros should be also no prob
 
 At this moment, only 1 initrd can be used. (not rootfs64.gz and modules64.gz)
 
-!! initramfs will NOT work, only a real initrd will do the job !!
+!! initramfs only !!
 
 ### Prereq NASM
 
