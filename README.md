@@ -73,7 +73,9 @@ CMDLINE="'loglevel=3'"
 Building the disk by:
 ```
 $ ./build.sh
-bootsector, kernel and initrd catenated in linux and created linux.vmdk
+Bootsector Linux loader 1.1 (C) 2023 By Alphons van der Heijden
+
+Ready /tmp/linux (19256832 bytes) and /tmp/linux.vmdk
 ```
 
 This will produce two files:
