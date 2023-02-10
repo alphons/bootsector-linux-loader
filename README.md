@@ -148,6 +148,7 @@ This simply means, give it more RAM !!!
 
 This is experimental, distil the kernel and initrd.gz from the bootdisk
 Trying this by looking for the MAGIC gz header on start of sectors. (sort of)
+The script also get rid of the initrd.gz padding by 'gunzip | gzip', it works.
 
 ```
 ./build.sh /tmp/bootdisk /tmp
