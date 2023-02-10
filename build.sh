@@ -65,23 +65,20 @@ if [ "$#" -gt 0 ]; then
   fi
   TOTAL=$(stat -c %s $INPUT)
   TOTALSECTORS=$(($TOTAL / $SECTORSIZE))
-  echo "(experimental) Decoding $INPUT to directory $DIR processing $TOTALSECTORS sectors"
-  i=1
-  while [ $i -lt $TOTALSECTORS ]
-  do
-    echo -e -n "$i\r"
-    PROBE=$(dd if=$INPUT count=1 skip=$i 2>/dev/null | hexdump -n 4 -e '/1 "%02x"')
-    if [[ "$PROBE" == "1f8b0800" ]]; then
-      echo "initrd.gz found at sector $i"
-      dd if=$INPUT count=$(($i - 1)) skip=1 2>/dev/null > $DIR/kernel
-      dd if=$INPUT count=$(($TOTALSECTORS - $i)) skip=$i 2>/dev/null > $DIR/initrd.gz
-      echo "ready"
-      echo
-      exit 0
-    fi
-    i=$(( $i + 1 ))
-  done
-  echo "No initrd.gz found"    
+  echo "Decoding $INPUT to directory $DIR processing..."
+  HEXADDRESS=$(hexdump $INPUT | grep '8b1f 0008 0000' | sed 's/ .*//' | tr '[a-z]' '[A-Z]')
+  if [[ $HEXADDRESS == "" ]]; then
+    echo "No initrd.gz found"
+    exit 1
+  fi
+  echo
+  ADDRESS=$(echo "obase=10; ibase=16; $HEXADDRESS" | bc)  
+  SECTOR=$(($ADDRESS / SECTORSIZE))
+  echo "writing: $DIR/kernel"
+  dd if=$INPUT count=$(($SECTOR - 1)) skip=1 2>/dev/null > $DIR/kernel
+  echo "writing: $DIR/initrd.gz"
+  dd if=$INPUT count=$(($TOTALSECTORS - $SECTOR)) skip=$SECTOR 2>/dev/null > $DIR/initrd.gz
+  echo
   exit 0
 fi
 
