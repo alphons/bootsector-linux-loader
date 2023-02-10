@@ -3,11 +3,39 @@
 No bootloader nor a filesystem is needed to make a linux distribution bootable from only the kernel and initrd
 
 All is tested with versions of TinyCore but other distros should be also no problem.
+The program should work for 64 bit and for 32 bit systems.
+Examples are all 64 bit.
+
+## Example Tinycore 13.x
+
+Example single initrd entry.
 
 - [corepure64.gz from www.tinycorelinux.net](http://www.tinycorelinux.net/13.x/x86_64/release/distribution_files/corepure64.gz)
 - [vmlinuz64 from www.tinycorelinux.net](http://www.tinycorelinux.net/13.x/x86_64/release/distribution_files/vmlinuz64)
 
-At this moment, only 1 initrd can be used. (not rootfs64.gz and modules64.gz)
+```
+WORK=/mnt/sda1/Alpha
+KERNEL=$WORK/vmlinuz64
+INITRD=$WORK/corepure64.gz
+CMDLINE="'loglevel=3'"
+OUTPUT=/tmp/linux
+```
+
+## Example Tinucore 14.x (Alpha testing)
+
+Also multiple initrd entries can be used
+
+- [rootfs64.gz from www.tinycorelinux.net](http://repo.tinycorelinux.net/14.x/x86_64/release_candidates/distribution_files/rootfs64.gz)
+- [modules64.gz from www.tinycorelinux.net](http://repo.tinycorelinux.net/14.x/x86_64/release_candidates/distribution_files/modules64.gz)
+- [vmlinuz64 from www.tinycorelinux.net](http://repo.tinycorelinux.net/14.x/x86_64/release_candidates/distribution_files/vmlinuz64)
+
+```
+WORK=/mnt/sda1/Alpha
+KERNEL=$WORK/vmlinuz64
+INITRD=$WORK/rootfs64.gz,$WORK/modules64.gz
+CMDLINE="'loglevel=3'"
+OUTPUT=/tmp/linux
+```
 
 Tested is with initrd of type initramfs (cpio -H newc)
 
