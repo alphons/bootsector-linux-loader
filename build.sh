@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-ME="Bootsector Linux loader 1.1 (C) 2023 By Alphons van der Heijden"
+ME="Bootsector Linux loader 1.2 (C) 2023 By Alphons van der Heijden"
 #
 # Making bootable disk file and an additional .vmdk file for booting in vmware
 #
@@ -10,6 +10,7 @@ ME="Bootsector Linux loader 1.1 (C) 2023 By Alphons van der Heijden"
 # HEADS=128, SECTORS=32 ; disksize > 1GB && disksize < 2GB
 # HEADS=255, SECTORS=63 ; disksize > 2GB
 #
+# Experimental disk decoding (to kernel and initrd.gz)
 
 # 2014- Dr Gareth Owen (www.ghowen.me). All rights reserved.
 #
@@ -42,8 +43,45 @@ echo
 BOOT="bsect.asm"
 TMPINITRD=/tmp/initrd.gz
 SECTORSIZE=512
-HEADS=64
-SECTORS=32
+
+if [ "$#" -gt 0 ]; then
+   if [ "$#" != 2 ]; then
+     echo "Usage: $0 <disk> <outputdirectory>"
+     echo
+     exit 1
+   fi
+  INPUT=$1
+  DIR=$2
+  if [ ! -d $DIR ]; then
+    echo "Directory does not exist"
+    exit 1
+  fi
+  if [ ! -f $INPUT ]; then
+    echo "Input file $INPUT not found"
+    echo
+    exit 1
+  fi
+  TOTAL=$(stat -c %s $INPUT)
+  TOTALSECTORS=$(($TOTAL / $SECTORSIZE))
+  echo "(experimental) Decoding $INPUT to directory $DIR processing $TOTALSECTORS sectors"
+  i=1
+  while [ $i -lt $TOTALSECTORS ]
+  do
+    echo -e -n "$i\r"
+    PROBE=$(dd if=$INPUT count=1 skip=$i 2>/dev/null | hexdump -n 4 -e '/1 "%02x"')
+    if [[ "$PROBE" == "1f8b0800" ]]; then
+      echo "initrd.gz found at sector $i"
+      dd if=$INPUT count=$(($i - 1)) skip=1 2>/dev/null > $DIR/kernel
+      dd if=$INPUT count=$(($TOTALSECTORS - $i)) skip=$i 2>/dev/null > $DIR/initrd.gz
+      echo "ready"
+      echo
+      exit 0
+    fi
+    i=$(( $i + 1 ))
+  done
+  echo "No initrd.gz found"    
+  exit 0
+fi
 
 # preprocessing INITRD for multiple entries
 echo -n > $TMPINITRD
