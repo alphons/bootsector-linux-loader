@@ -6,9 +6,9 @@ All is tested with versions of TinyCore but other distros should be also no prob
 The program should work for 64 bit and for 32 bit systems.
 Examples are all 64 bit.
 
-## Example Tinycore 13.x
+## Example single initrd entry
 
-Example single initrd entry.
+Example single initrd entry from the TinyCore 13 release.
 
 - [corepure64.gz from www.tinycorelinux.net](http://www.tinycorelinux.net/13.x/x86_64/release/distribution_files/corepure64.gz)
 - [vmlinuz64 from www.tinycorelinux.net](http://www.tinycorelinux.net/13.x/x86_64/release/distribution_files/vmlinuz64)
@@ -21,9 +21,9 @@ CMDLINE="'loglevel=3'"
 OUTPUT=/tmp/linux
 ```
 
-## Example Tinucore 14.x (Alpha testing)
+## Example multiple initrd entries
 
-Also multiple initrd entries can be used
+Also multiple initrd entries can be used, as an example TinyCore 14.x (Alpha testing)
 
 - [rootfs64.gz from www.tinycorelinux.net](http://repo.tinycorelinux.net/14.x/x86_64/release_candidates/distribution_files/rootfs64.gz)
 - [modules64.gz from www.tinycorelinux.net](http://repo.tinycorelinux.net/14.x/x86_64/release_candidates/distribution_files/modules64.gz)
