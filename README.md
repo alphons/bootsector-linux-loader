@@ -6,6 +6,16 @@ All is tested with versions of TinyCore but other distros should be also no prob
 The program should work for 64 bit and for 32 bit systems.
 Examples are all 64 bit.
 
+Tested is with initrd of type initramfs (cpio -H newc)
+
+The generated .vmdk file is only used in a VMWare environment, but is not needed when in Qemu or other VM application.
+
+Running the script:
+
+```
+./build.sh
+```
+
 ## Example single initrd entry
 
 Example single initrd entry from the TinyCore 13 release.
@@ -23,7 +33,7 @@ OUTPUT=/tmp/linux
 
 ## Example multiple initrd entries
 
-Also multiple initrd entries can be used, as an example TinyCore 14.x (Alpha testing)
+Also multiple initrd entries can be used, comma seperated, as an example TinyCore 14.x (Alpha testing)
 
 - [rootfs64.gz from www.tinycorelinux.net](http://repo.tinycorelinux.net/14.x/x86_64/release_candidates/distribution_files/rootfs64.gz)
 - [modules64.gz from www.tinycorelinux.net](http://repo.tinycorelinux.net/14.x/x86_64/release_candidates/distribution_files/modules64.gz)
@@ -37,9 +47,6 @@ CMDLINE="'loglevel=3'"
 OUTPUT=/tmp/linux
 ```
 
-Tested is with initrd of type initramfs (cpio -H newc)
-
-The generated .vmdk file is only used in a VMWare environment, but not needed when in Qemu or other VM application.
 
 ### Prereq NASM
 
