@@ -4,12 +4,12 @@ No bootloader nor a filesystem is needed to make a linux distribution bootable f
 
 All is tested with versions of TinyCore but other distros should be also no problem.
 
-- [corepure64.gz](http://www.tinycorelinux.net/13.x/x86_64/release/distribution_files/corepure64.gz)
-- [vmlinuz64](http://www.tinycorelinux.net/13.x/x86_64/release/distribution_files/vmlinuz64)
+- [corepure64.gz from www.tinycorelinux.net](http://www.tinycorelinux.net/13.x/x86_64/release/distribution_files/corepure64.gz)
+- [vmlinuz64 from www.tinycorelinux.net](http://www.tinycorelinux.net/13.x/x86_64/release/distribution_files/vmlinuz64)
 
 At this moment, only 1 initrd can be used. (not rootfs64.gz and modules64.gz)
 
-!! initramfs only !!
+Tested is with initrd of type initramfs (cpio -H newc)
 
 The generated .vmdk file is only used in a VMWare environment, but not needed when in Qemu or other VM application.
 
@@ -69,13 +69,12 @@ bootsector, kernel and initrd catenated in linux and created linux.vmdk
 
 ### bsect.asm
 
-The key to this solution is the bootsector program made by [Gareth Owen](/owenson/tiny-linux-bootloader)
-with some small modifications.
+The key to this solution is the bootsector program made initially by [Gareth Owen](/owenson/tiny-linux-bootloader) which is modified.
 
 There is not much room to pack it all into 512 bytes of the bootsector. At default a kernel command line of 68 chars can be used at max.
 
-The result is always a 512 byte bootsector which loads the (padded to 512 byte sectors) kernel in protected mode and
-also loads the (also padded to 512 bytes sector) initrd into protected memory and starts executing the kernel with given command line
+The result is always a 512 byte bootsector which loads the (padded to 512 byte sectors) 'kernel' in protected mode and
+also loads the (also padded to 512 bytes sector) 'initrd' into protected memory and starts executing the kernel with given command line
 and memory pointer to initrd.
 
 ## Running the bootdisc
@@ -106,4 +105,4 @@ Kernel Offset: disabled
 Rebooting in 60 seconds.
 ```
 
-Simply means, give it more RAM !!!
+This simply means, give it more RAM !!!
