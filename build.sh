@@ -1,8 +1,15 @@
 #!/bin/sh
 #
-# Bootsector Linux loader 1.0
+ME="Bootsector Linux loader 1.1 (C) 2023 By Alphons van der Heijden"
 #
-# (c) 2023- by Alphons van der Heijden for making bootable disk file and .vmdk file for booting in vmware
+# Making bootable disk file and an additional .vmdk file for booting in vmware
+#
+# For the .vmdk file see https://kb.vmware.com/s/article/1026266
+# (this is handled in this script)
+# HEADS=64,  SECTORS=32 ; disksize < 1GB
+# HEADS=128, SECTORS=32 ; disksize > 1GB && disksize < 2GB
+# HEADS=255, SECTORS=63 ; disksize > 2GB
+#
 
 # 2014- Dr Gareth Owen (www.ghowen.me). All rights reserved.
 #
@@ -19,37 +26,74 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# INITRD can have multiple gz files, for example INITRD=rootfs.gz,modules.gz
 
-WORK=/mnt/sda1/release/iso_contents/boot
-
-OUTPUT="linux"
-KERNEL="$WORK/vmlinuz64"
-INITRD="$WORK/corepure64.gz"
+WORK=/mnt/sda1/Alpha
+KERNEL=$WORK/vmlinuz64
+INITRD=$WORK/rootfs64.gz,$WORK/modules64.gz
 CMDLINE="'loglevel=3'"
+OUTPUT=/tmp/linux
 
-#bootsector assembly
+#
+echo
+echo $ME
+echo
+# some usefull constants
 BOOT="bsect.asm"
+TMPINITRD=/tmp/initrd.gz
+SECTORSIZE=512
+HEADS=64
+SECTORS=32
 
-#size of kern + ramdisk
+# preprocessing INITRD for multiple entries
+echo -n > $TMPINITRD
+for gz in ${INITRD//,/ }
+do 
+  if [ -f $gz ]; then
+    cat $gz >> $TMPINITRD
+  else
+    echo "Error: $gz not found"
+    echo
+    exit 1
+  fi
+done
+
+# size of kernel + ramdisk
 K_SZ=$(stat -c %s $KERNEL)
-R_SZ=$(stat -c %s $INITRD)
+R_SZ=$(stat -c %s $TMPINITRD)
 
-#padding to make it up to a sector
-# Always use padding even when on 512 boundary
-K_PAD=$((512 - $K_SZ % 512))
-R_PAD=$((512 - $R_SZ % 512))
+# Padding to make it up to a sector
+# Always use padding even when on SECTORSIZE boundary
+K_PAD=$(($SECTORSIZE - $K_SZ % $SECTORSIZE))
+R_PAD=$(($SECTORSIZE - $R_SZ % $SECTORSIZE))
 
 nasm -o $OUTPUT -D initRdSizeDef=$R_SZ -D cmdLineDef=$CMDLINE $BOOT
 
 cat $KERNEL >> $OUTPUT
 dd if=/dev/zero bs=1 count=$K_PAD status=none >> $OUTPUT
 
-cat $INITRD >> $OUTPUT
+cat $TMPINITRD >> $OUTPUT
 dd if=/dev/zero bs=1 count=$R_PAD status=none >> $OUTPUT
+rm -f $TMPINITRD
 
 TOTAL=$(stat -c %s $OUTPUT)
-SECTORS=$(($TOTAL / 512))
-CYLINDERS=$(($SECTORS / 16065))
+
+if [ $TOTAL -gt 2000000000 ]; then
+  SECTORS=63
+  HEADS=255
+else
+  SECTORS=32
+  if [ $TOTAL -gt 1000000000 ]; then
+    HEADS=128
+  else
+    HEADS=64
+  fi
+fi
+
+TOTALSECTORS=$(($TOTAL / $SECTORSIZE))
+CYLINDERS=$(($TOTALSECTORS / ($HEADS * $SECTORS)))
+
+OUTPUTNAME=$(echo $OUTPUT | sed 's/.*\///' )
 
 cat > $OUTPUT.vmdk <<EOF
 version=1
@@ -57,12 +101,13 @@ encoding="UTF-8"
 CID=123456789
 parentCID=ffffffff
 createType="vmfs"
-RW $SECTORS VMFS "$OUTPUT"
+RW $TOTALSECTORS VMFS "$OUTPUTNAME"
 ddb.virtualHWVersion = "8"
 ddb.geometry.cylinders = "$CYLINDERS"
-ddb.geometry.heads = "255"
-ddb.geometry.sectors = "63"
+ddb.geometry.heads = "$HEADS"
+ddb.geometry.sectors = "$SECTORS"
 ddb.adapterType = "lsilogic"
 EOF
 
-echo "bootsector, kernel and initrd catenated in $OUTPUT and created $OUTPUT.vmdk"
+echo "Ready $OUTPUT ($TOTAL bytes) and $OUTPUT.vmdk"
+echo
