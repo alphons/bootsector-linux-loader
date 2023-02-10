@@ -10,7 +10,9 @@ ME="Bootsector Linux loader 1.2 (C) 2023 By Alphons van der Heijden"
 # HEADS=128, SECTORS=32 ; disksize > 1GB && disksize < 2GB
 # HEADS=255, SECTORS=63 ; disksize > 2GB
 #
-# Experimental disk decoding (to kernel and initrd.gz)
+# Experimental disk decoding
+# for example: ./build.sh disk /tmp 
+# creates kernel and initrd.gz in /tmp
 
 # 2014- Dr Gareth Owen (www.ghowen.me). All rights reserved.
 #
