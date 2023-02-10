@@ -143,3 +143,16 @@ Rebooting in 60 seconds.
 ```
 
 This simply means, give it more RAM !!!
+
+# Decoding disk
+
+This is experimental, distil the kernel and initrd.gz from the bootdisk
+Trying this by looking for the MAGIC gz header on start of sectors. (sort of)
+
+```
+./build.sh /tmp/bootdisk /tmp
+
+write: /tmp/kernel
+write: /tmp/initrd.gz
+```
+
