@@ -1,13 +1,12 @@
 @echo off
 rem
-rem Bootsector Linux Loader
+rem Bootsector Linux Loader 1.0
 rem
 rem (C) 2023 Alphons van der Heijden
 rem 
 rem Create a bootable disk out of kernel and initrd
-rem for VMWARE player/esxi without bootloader
+rem Also creating vmdk file for VMWARE player/esxi
 rem using nasm creating a bootsector
-rem creating a vmdk file
 rem 
 rem
 setlocal

@@ -1,7 +1,11 @@
 #!/bin/sh
-# Bootsector Linux loader
-# (c) 2014- Dr Gareth Owen (www.ghowen.me). All rights reserved.
+#
+# Bootsector Linux loader 1.0
+#
+# (c) 2023- by Alphons van der Heijden for making bootable disk file and .vmdk file for booting in vmware
 
+# 2014- Dr Gareth Owen (www.ghowen.me). All rights reserved.
+#
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
@@ -15,8 +19,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#
-#    Updated 2023- by Alphons van der Heijden for making .vmdk disk for booting in vmware
 
 WORK=/mnt/sda1/release/iso_contents/boot
 
