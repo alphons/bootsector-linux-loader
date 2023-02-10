@@ -1,5 +1,7 @@
 @echo off
 rem
+rem Bootsector Linux Loader
+rem
 rem (C) 2023 Alphons van der Heijden
 rem 
 rem Create a bootable disk out of kernel and initrd

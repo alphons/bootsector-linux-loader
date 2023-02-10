@@ -1,5 +1,5 @@
 #!/bin/sh
-# Tiny Linux Bootloader
+# Bootsector Linux loader
 # (c) 2014- Dr Gareth Owen (www.ghowen.me). All rights reserved.
 
 #    This program is free software: you can redistribute it and/or modify
@@ -33,20 +33,17 @@ K_SZ=$(stat -c %s $KERNEL)
 R_SZ=$(stat -c %s $INITRD)
 
 #padding to make it up to a sector
+# Always use padding even when on 512 boundary
 K_PAD=$((512 - $K_SZ % 512))
 R_PAD=$((512 - $R_SZ % 512))
 
 nasm -o $OUTPUT -D initRdSizeDef=$R_SZ -D cmdLineDef=$CMDLINE $BOOT
 
 cat $KERNEL >> $OUTPUT
-if [[ $K_PAD -lt 512 ]]; then
-    dd if=/dev/zero bs=1 count=$K_PAD status=none >> $OUTPUT
-fi
+dd if=/dev/zero bs=1 count=$K_PAD status=none >> $OUTPUT
 
 cat $INITRD >> $OUTPUT
-if [[ $R_PAD -lt 512 ]]; then
-    dd if=/dev/zero bs=1 count=$R_PAD status=none >> $OUTPUT
-fi
+dd if=/dev/zero bs=1 count=$R_PAD status=none >> $OUTPUT
 
 TOTAL=$(stat -c %s $OUTPUT)
 SECTORS=$(($TOTAL / 512))
