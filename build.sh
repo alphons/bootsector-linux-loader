@@ -77,9 +77,14 @@ if [ "$#" -gt 0 ]; then
   echo "writing: $DIR/kernel"
   dd if=$INPUT count=$(($SECTOR - 1)) skip=1 2>/dev/null > $DIR/kernel
   echo "writing: $DIR/initrd.gz"
-  dd if=$INPUT count=$(($TOTALSECTORS - $SECTOR)) skip=$SECTOR 2>/dev/null > $DIR/initrd.gz
+  dd if=$INPUT count=$(($TOTALSECTORS - $SECTOR)) skip=$SECTOR 2>/dev/null | gunzip | gzip > $DIR/initrd.gz
   echo
   exit 0
+fi
+
+if [ ! -f $KERNEL ]; then
+  echo "Error: $KERNEL not found"
+  exit 1
 fi
 
 # preprocessing INITRD for multiple entries
@@ -100,7 +105,7 @@ K_SZ=$(stat -c %s $KERNEL)
 R_SZ=$(stat -c %s $TMPINITRD)
 
 # Padding to make it up to a sector
-# Always use padding even when on SECTORSIZE boundary
+# Always use padding even when exact on sector boundary
 K_PAD=$(($SECTORSIZE - $K_SZ % $SECTORSIZE))
 R_PAD=$(($SECTORSIZE - $R_SZ % $SECTORSIZE))
 
