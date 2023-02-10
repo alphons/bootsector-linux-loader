@@ -20,56 +20,53 @@
 org	0x7c00
 
 	cli
-	xor	ax, ax
-	mov	ds, ax
-	mov	ss, ax
-	mov	sp, 0x7c00			; setup stack 
+	xor ax, ax
+	mov ds, ax
+	mov ss, ax
+	mov sp, 0x7c00		; setup stack 
 
-; now get into protected move (32bit) as kernel is large and has to be loaded high
-	mov ax, 0x2401 ; A20 line enable via BIOS
-	int 0x15
+	mov ax, 0x2401		; now get into protected move (32bit) as kernel is large and has to be loaded high
+	int 0x15		; A20 line enable via BIOS
 	jc err
-
 
 	lgdt [gdt_desc]
 	mov eax, cr0
 	or eax, 1
 	mov cr0, eax
 
-	jmp $+2
+	jmp $+2			; nop
 
-	mov bx, 0x8 ; first descriptor in GDT
+	mov bx, 0x8		; first descriptor in GDT
 	mov ds, bx
 	mov es, bx
 	mov gs, bx
 
-	and al, 0xFE ; back to real mode
+	and al, 0xFE		; back to real mode
 	mov cr0, eax
     
-	xor ax,ax ; restore segment values - now limits are removed but seg regs still work as normal
-	mov	ds, ax
-	mov	gs, ax
-	mov ax, 0x1000 ; segment for kernel load (mem off 0x10000)
-	mov	es, ax
+	xor ax,ax		; restore segment values - now limits are removed but seg regs still work as normal
+	mov ds, ax
+	mov gs, ax
+	mov ax, 0x1000		; segment for kernel load (mem off 0x10000)
+	mov es, ax
 	sti
 
-	; now in UNREAL mode
-
-	mov ax, 1 ; one sector
-	xor bx,bx ; offset
-	mov cx, 0x1000 ; seg
+				; now in UNREAL mode
+	mov ax, 1 		; one sector
+	xor bx,bx 		; offset
+	mov cx, 0x1000 		; seg
 	call hddread
 
 read_kernel_setup:
-	mov al, [es:0x1f1] ; no of sectors
+	mov al, [es:0x1f1] 	; no of sectors
 	cmp ax, 0
 	jne read_kernel_setup.next
-	mov ax, 4 ; default is 4 
+	mov ax, 4 		; default is 4 
 
 .next:
-	; ax = count
-	mov bx, 512 ; next offset
-	mov cx, 0x1000 ; segment
+				; ax = count
+	mov bx, 512 		; next offset
+	mov cx, 0x1000 		; segment
 	call hddread
 
 	cmp word [es:0x206], 0x204
@@ -77,34 +74,33 @@ read_kernel_setup:
 	test byte [es:0x211], 1
 	jz err
 
-	mov byte [es:0x210], 0xe1 ;loader type
-	mov byte [es:0x211], 0x81 ;heap use? !! SET Bit5 to Make Kern Quiet
-	mov word [es:0x224], 0xde00 ;head_end_ptr
-	mov byte [es:0x227], 0x01 ;ext_loader_type / bootloader id
-	mov dword [es:0x228], 0x1e000 ;cmd line ptr
+	mov byte [es:0x210], 0xe1	; loader type
+	mov byte [es:0x211], 0x81	; heap use? !! SET Bit5 to Make Kern Quiet
+	mov word [es:0x224], 0xde00	; head_end_ptr
+	mov byte [es:0x227], 0x01 	; ext_loader_type / bootloader id
+	mov dword [es:0x228], 0x1e000	; cmd line ptr
 
-	; copy cmd line 
-	mov si, cmdLine
+	mov si, cmdLine		; copy cmd line
 	mov di, 0xe000 
 	mov cx, cmdLineLen
-	rep movsb ; copies from DS:si to ES:di (0x1e000)
+	rep movsb		; copies from DS:si to ES:di (0x1e000)
 
-	; modern kernels are bzImage ones (despite name on disk and so
-	; the protected mode part must be loaded at 0x100000
-	; load 127 sectors at a time to 0x2000, then copy to 0x100000
+				; modern kernels are bzImage ones (despite name on disk and so
+				; the protected mode part must be loaded at 0x100000
+				; load 127 sectors at a time to 0x2000, then copy to 0x100000
 
-;load_kernel
-	mov edx, [es:0x1f4] ; bytes to load
+				; load_kernel
+	mov edx, [es:0x1f4]	; bytes to load
 	shl edx, 4
 	call loader
 
-;load initrd
-	mov eax, 0x7fab000; this is the address qemu loads it at
+				; load initrd
+	mov eax, 0x7fab000	; this is the address qemu loads it at
 	mov [highmove_addr],eax ; end of kernel and initrd load address
 
 	mov [es:0x218], eax
-	mov edx, [initRdSize] ; ramdisk size in bytes
-	mov [es:0x21c], edx ; ramdisk size into kernel header
+	mov edx, [initRdSize]	; ramdisk size in bytes
+	mov [es:0x21c], edx	; ramdisk size into kernel header
 	call loader
 
 kernel_start:
@@ -117,7 +113,7 @@ kernel_start:
 	mov ss, ax
 	mov sp, 0xe000
 	jmp 0x1020:0
-	jmp $
+	jmp $			; infinity
 
 ; ================= functions ====================
 ; length in bytes into edx
@@ -129,9 +125,9 @@ loader:
 	jl loader.part_2
 	jz loader.finish
 
-	mov ax, 127 ;count
-	xor bx, bx ; offset
-	mov cx, 0x2000 ; seg
+	mov ax, 127		; count
+	xor bx, bx		; offset
+	mov cx, 0x2000		; seg
 	push edx
 	call hddread
 	call highmove
@@ -140,9 +136,9 @@ loader:
 
 	jmp loader.loop
 
-.part_2:   ; load less than 127*512 sectors
-	shr edx, 9  ; divide by 512
-	inc edx     ; increase by one to get final sector if not multiple - otherwise just load junk - doesn't matter
+.part_2:			; load less than 127*512 sectors
+	shr edx, 9		; divide by 512
+	inc edx			; increase by one to get final sector if not multiple - otherwise just load junk - doesn't matter
 	mov ax, dx
 	xor bx,bx
 	mov cx, 0x2000
@@ -160,7 +156,7 @@ highmove:
 	mov esi, 0x20000
 	mov edi, [highmove_addr]
 	mov edx, 512*127
-	mov ecx, 0 ; pointer
+	mov ecx, 0		; pointer
 .loop:
 	mov eax, [ds:esi]
 	mov [ds:edi], eax
@@ -172,7 +168,10 @@ highmove:
 	ret
 
 err:
-	jmp $
+	jmp $			; infinity calls
+;	cli
+; 	hlt
+;	jmp err
 
 hddread:
 	push eax
@@ -182,28 +181,28 @@ hddread:
 	mov edx, dword [hddLBA]
 	mov dword [dap.lba], edx
 	and eax, 0xffff
-	add edx, eax       ; advance lba pointer
+	add edx, eax		; advance lba pointer
 	mov [hddLBA], edx
 	mov ah, 0x42
 	mov si, dap
-	mov dl, 0x80 ; first hdd
+	mov dl, 0x80		; first hdd
 	int 0x13
 	jc err
 	pop eax
 	ret
 
 dap:
-	db 0x10 ; size
-	db 0 ; unused
+	db 0x10			; size
+	db 0 			; unused
 .count:
-	dw 0 ; num sectors
+	dw 0 			; num sectors
 .offset:
-	dw 0 ;dest offset
+	dw 0 			; dest offset
 .segment:
-	dw 0 ;dest segment
+	dw 0 			; dest segment
 .lba:
-	dd 0 ; lba low bits
-	dd 0 ; lba high bits
+	dd 0 			; lba low bits
+	dd 0 			; lba high bits
 
 ;descriptor
 gdt_desc:
@@ -214,26 +213,27 @@ gdt_desc:
 ; flags: Granuality (0=limitinbytes, 1=limitin4kbs), Sz= [0=16bit, 1=32bit], 0, 0
 
 gdt:
-	dq 0 ; first entry 0
-;flat data segment
-	dw 0FFFFh ; limit[0:15] (aka 4gb)
-	dw 0      ; base[0:15]
-	db 0      ; base[16:23]
-	db 10010010b  ; access byte 
-	db 11001111b    ; [7..4]= flags [3..0] = limit[16:19]
-	db 0 ; base[24:31]
+	dq 0			; first entry 0
+				; flat data segment
+	dw 0FFFFh		; limit[0:15] (aka 4gb)
+	dw 0			; base[0:15]
+	db 0			; base[16:23]
+	db 10010010b		; access byte 
+	db 11001111b		; [7..4]= flags [3..0] = limit[16:19]
+	db 0			; base[24:31]
 
 gdt_end:
 
-; config options
-	hddLBA dd 1   ; start address for kernel - subsequent calls are sequential
+	; config options
+	hddLBA dd 1	; start address for kernel - subsequent calls are sequential
 	initRdSize dd initRdSizeDef
-; kernel command line fills up the space, can not exceed address 510
+
+	; kernel command line fills up the space, can not exceed address 510
 	cmdLine db cmdLineDef,0
 	cmdLineLen equ $-cmdLine
 
-;boot sector magic
-	times	510-($-$$)	db	0
+	;boot sector magic
+	times	510-($-$$) db 0
 	dw	0xaa55
 
-; this is the end
+	; this is the end
