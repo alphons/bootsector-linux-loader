@@ -14,7 +14,7 @@ Example single initrd entry.
 - [vmlinuz64 from www.tinycorelinux.net](http://www.tinycorelinux.net/13.x/x86_64/release/distribution_files/vmlinuz64)
 
 ```
-WORK=/mnt/sda1/Alpha
+WORK=/mnt/sda1/normal
 KERNEL=$WORK/vmlinuz64
 INITRD=$WORK/corepure64.gz
 CMDLINE="'loglevel=3'"
