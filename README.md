@@ -52,6 +52,8 @@ OUTPUT=/tmp/linux
 
 Get a version of [NASM](https://www.nasm.us/) at the official site, or maybe it is installed on your unix system already.
 
+Did you know as of July 2020, its source code repository is hosted at github. Have a look at [github.com/netwide-assembler/nasm](https://github.com/netwide-assembler/nasm)
+
 For convienence, this repository stores the 32bit exe dos/windows version "NASM version 2.16.01 compiled on Dec 21 2022"
 
 It will work on 64 bit systems also, but is a bit smaller ;-)
