@@ -130,7 +130,7 @@ ide0:0.fileName = "linux.vmdk"
 ```
 
 But also a scsi adapter can be used.
-When adding the disk to Vmware player, the programs asks for converting the disk, say NO here.
+When adding the disk to Vmware player, the programs may ask for converting the disk, you can say Yes or No, does not matter.
 
 Have fun.
 
