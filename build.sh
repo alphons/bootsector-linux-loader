@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-ME="Bootsector Linux loader 1.2 (C) 2023 By Alphons van der Heijden"
+ME="Bootsector Linux loader 1.3 (C) 2023 By Alphons van der Heijden"
 #
 # Making bootable disk file and an additional .vmdk file for booting in vmware
 #
@@ -31,9 +31,10 @@ ME="Bootsector Linux loader 1.2 (C) 2023 By Alphons van der Heijden"
 
 # INITRD can have multiple gz files, for example INITRD=rootfs.gz,modules.gz
 
-WORK=/mnt/sda1/Alpha
+WORK=/mnt/sdb1/release/iso_contents/boot
 KERNEL=$WORK/vmlinuz64
-INITRD=$WORK/rootfs64.gz,$WORK/modules64.gz
+INITRD=$WORK/corepure64.gz
+#rootfs64.gz,$WORK/modules64.gz
 CMDLINE="'loglevel=3'"
 OUTPUT=/tmp/linux
 

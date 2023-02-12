@@ -1,20 +1,21 @@
-; Bootsector Linux loader
+;
+; Bootsector Linux loader 1.3
+; (c) 2023- Alphons van der Heijden alphons@heijden.com
+;
 ; (c) 2014- Dr Gareth Owen (www.ghowen.me). All rights reserved.
 ; Some code adapted from Sebastian Plotz - rewritten, adding pmode and initrd support.
-
-;    This program is free software: you can redistribute it and/or modify
-;    it under the terms of the GNU General Public License as published by
-;    the Free Software Foundation, either version 3 of the License, or
-;    (at your option) any later version.
+; This program is free software: you can redistribute it and/or modify
+; it under the terms of the GNU General Public License as published by
+; the Free Software Foundation, either version 3 of the License, or
+; (at your option) any later version.
 ;
-;    This program is distributed in the hope that it will be useful,
-;    but WITHOUT ANY WARRANTY; without even the implied warranty of
-;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;    GNU General Public License for more details.
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
 ;
-;    You should have received a copy of the GNU General Public License
-;    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-;    Adapted 2023- Alphons van der Heijden
+; You should have received a copy of the GNU General Public License
+; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 [BITS 16]
 org	0x7c00
@@ -29,12 +30,10 @@ org	0x7c00
 	int 0x15		; A20 line enable via BIOS
 	jc err
 
-	lgdt [gdt_desc]
+	lgdt [gdt_desc]		; Global Descriptor Table
 	mov eax, cr0
 	or eax, 1
 	mov cr0, eax
-
-	jmp $+2			; nop
 
 	mov bx, 0x8		; first descriptor in GDT
 	mov ds, bx
@@ -113,12 +112,11 @@ kernel_start:
 	mov ss, ax
 	mov sp, 0xe000
 	jmp 0x1020:0
-	jmp $			; infinity
 
-; ================= functions ====================
-; length in bytes into edx
-; uses hddread [hddLBA] and highmove [highmove_addr] vars
-; clobbers 0x2000 segment
+	; ================= functions ====================
+	; length in bytes into edx
+	; uses hddread [hddLBA] and highmove [highmove_addr] vars
+	; clobbers 0x2000 segment
 loader:
 .loop:
 	cmp edx, 127*512
@@ -149,9 +147,9 @@ loader:
 	ret
 
 	highmove_addr dd 0x100000
-; source = 0x2000
-; count = 127*512  fixed, doesn't if matter we copy junk at end
-; don't think we can use rep movsb here as it wont use EDI/ESI in unreal mode
+	; source = 0x2000
+	; count = 127*512  fixed, doesn't if matter we copy junk at end
+	; don't think we can use rep movsb here as it wont use EDI/ESI in unreal mode
 highmove:
 	mov esi, 0x20000
 	mov edi, [highmove_addr]
@@ -168,10 +166,9 @@ highmove:
 	ret
 
 err:
-	jmp $			; infinity calls
-;	cli
-; 	hlt
-;	jmp err
+	cli			; don't do the jmp $ here
+ 	hlt			; it will eat your cpu by thermal heat
+	jmp err
 
 hddread:
 	push eax
@@ -204,13 +201,13 @@ dap:
 	dd 0 			; lba low bits
 	dd 0 			; lba high bits
 
-;descriptor
+	;descriptor
 gdt_desc:
 	dw gdt_end - gdt - 1
 	dd gdt
 
-; access byte: [present, priv[2] (0=highest), 1, Execbit, Direction=0, rw=1, accessed=0] 
-; flags: Granuality (0=limitinbytes, 1=limitin4kbs), Sz= [0=16bit, 1=32bit], 0, 0
+	; access byte: [present, priv[2] (0=highest), 1, Execbit, Direction=0, rw=1, accessed=0] 
+	; flags: Granuality (0=limitinbytes, 1=limitin4kbs), Sz= [0=16bit, 1=32bit], 0, 0
 
 gdt:
 	dq 0			; first entry 0
@@ -221,7 +218,6 @@ gdt:
 	db 10010010b		; access byte 
 	db 11001111b		; [7..4]= flags [3..0] = limit[16:19]
 	db 0			; base[24:31]
-
 gdt_end:
 
 	; config options
