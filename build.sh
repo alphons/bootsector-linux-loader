@@ -35,7 +35,7 @@ WORK=/mnt/sdb1/release/iso_contents/boot
 KERNEL=$WORK/vmlinuz64
 INITRD=$WORK/corepure64.gz
 #rootfs64.gz,$WORK/modules64.gz
-CMDLINE="'loglevel=3'"
+CMDLINE="'loglevel=3 nozswap'"
 OUTPUT=/tmp/linux
 
 #
@@ -110,7 +110,7 @@ R_SZ=$(stat -c %s $TMPINITRD)
 K_PAD=$(($SECTORSIZE - $K_SZ % $SECTORSIZE))
 R_PAD=$(($SECTORSIZE - $R_SZ % $SECTORSIZE))
 
-nasm -o $OUTPUT -D initRdSizeDef=$R_SZ -D cmdLineDef=$CMDLINE $BOOT
+nasm -o $OUTPUT -D initRdSizeDef=$R_SZ -D cmdLineDef="$CMDLINE" $BOOT
 
 cat $KERNEL >> $OUTPUT
 dd if=/dev/zero bs=1 count=$K_PAD status=none >> $OUTPUT
