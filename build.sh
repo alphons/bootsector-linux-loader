@@ -31,7 +31,7 @@ ME="Bootsector Linux loader 1.3 (C) 2023 By Alphons van der Heijden"
 
 # INITRD can have multiple gz files, for example INITRD=rootfs.gz,modules.gz
 
-WORK=/mnt/sda1/release/iso_contents/boot
+WORK=/mnt/sdb1
 KERNEL=$WORK/vmlinuz64
 INITRD=$WORK/vmtux64.gz
 #rootfs64.gz,$WORK/modules64.gz
